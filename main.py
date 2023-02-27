@@ -11,6 +11,7 @@ from threading import Thread
 BOT_TOKEN = parameters.bot_token
 bot = telebot.TeleBot(BOT_TOKEN)
 
+
 # keyboard_phone = telebot.types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True, one_time_keyboard=True)
 # button_phone = telebot.types.KeyboardButton(text="Send phone", request_contact=True)
 # keyboard_phone.add(button_phone)  # Add this button
@@ -103,18 +104,29 @@ def forward_message(message):
 def send_answer_to_user():
 	while True:
 		for user in users:
-			if datetime.datetime.now() > datetime.datetime.strptime(users[user]["time_answer_message"], "%Y-%m-%d %H:%M:%S") \
+			if datetime.datetime.now() > datetime.datetime.strptime(users[user]["time_answer_message"],
+			                                                        "%Y-%m-%d %H:%M:%S") \
 					and users[user]['send_answer'] is False:
 				# Фіксація вихідних
 				if datetime.datetime.weekday(
-						datetime.datetime.strptime(users[user]["time_last_message"], "%Y-%m-%d %H:%M:%S")) > 4:
+						datetime.datetime.strptime(users[user]["time_last_message"],
+						                           "%Y-%m-%d %H:%M:%S")) > 4:
 					bot.send_message(users[user]["chat_id"],
 					                 f"Дякуємо, {user}. "
 					                 f"Запит прийнято, але сьогодні у нас вихідний. "
 					                 f"У понеділок наші фахівці займуться вашим питанням.")
+				# П'ятниця, вечір
+				elif datetime.datetime.weekday(
+						datetime.datetime.strptime(users[user]["time_last_message"], "%Y-%m-%d %H:%M:%S")) == 4 and \
+						int(str(datetime.datetime.strptime(users[user]["time_last_message"], "%Y-%m-%d %H:%M:%S").
+								strftime("%H"))) >= 16:
+					bot.send_message(users[user]["chat_id"],
+					                 f"Дякуємо, {user}. "
+					                 f"Запит прийнято, але ми вже не працюємо. "
+					                 f"У понеділок наші фахівці займуться вашим питанням.")
 				# Фіксація неробочого часу
-				elif 9 > int(str((datetime.datetime.strptime(users[user]["time_last_message"],
-				                                              "%Y-%m-%d %H:%M:%S").strftime("%H")))) >= 18:
+				elif 7 > int(str(datetime.datetime.strptime(users[user]["time_last_message"],
+				                                            "%Y-%m-%d %H:%M:%S").strftime("%H"))) >= 16:
 					bot.send_message(users[user]["chat_id"],
 					                 f"Дякуємо, {user}."
 					                 f"Запит прийнято, але ми вже не працюємо. Завтра наші фахівці займуться вашим питанням.")
@@ -135,7 +147,6 @@ if __name__ == '__main__':
 			users = json.load(file)
 	else:
 		users = {}
-	
 	
 	t1 = Thread(target=send_answer_to_user)
 	t2 = Thread(target=bot.infinity_polling)
