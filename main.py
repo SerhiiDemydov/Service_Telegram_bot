@@ -125,7 +125,7 @@ def send_answer_to_user():
 					                 f"Запит прийнято, але ми вже не працюємо. "
 					                 f"У понеділок наші фахівці займуться вашим питанням.")
 				# Фіксація неробочого часу
-				elif 7 > int(str(datetime.datetime.strptime(users[user]["time_last_message"],
+				elif 7 < int(str(datetime.datetime.strptime(users[user]["time_last_message"],
 				                                            "%Y-%m-%d %H:%M:%S").strftime("%H"))) >= 16:
 					bot.send_message(users[user]["chat_id"],
 					                 f"Дякуємо, {user}."
