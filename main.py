@@ -71,7 +71,7 @@ def send_welcome(message):
 	               "migrate_to_chat_id", "migrate_from_chat_id", "pinned_message", "web_app_data"])
 def forward_message(message):
 	# Надсилання повідомлення клієнту
-	if message.chat.id == parameters.group_id_main:
+	if message.chat.id == parameters.group_id_test:
 		# print(message.reply_to_message)
 		if message.reply_to_message.forward_sender_name:
 			print(f'Send to {message.reply_to_message.forward_sender_name}')
@@ -81,7 +81,7 @@ def forward_message(message):
 			bot.send_message(message.reply_to_message.forward_from.id, message.text)
 	# Перенаправлення повідомлення до групи підтримки
 	else:
-		bot.forward_message(parameters.group_id_main, message.chat.id, message.message_id)
+		bot.forward_message(parameters.group_id_test, message.chat.id, message.message_id)
 		print(f"From {message.chat.id}")
 		# print(message)
 		users.update(
