@@ -92,7 +92,7 @@ def forward_message(message):
 						"chat_id": message.chat.id,
 						"time_last_message": str(datetime.datetime.fromtimestamp(message.date)),
 						"time_answer_message": str(
-							datetime.datetime.fromtimestamp(message.date) + datetime.timedelta(minutes=10)),
+							datetime.datetime.fromtimestamp(message.date) + datetime.timedelta(minutes=2)),
 						"send_answer": False
 					}
 			}
