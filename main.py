@@ -73,13 +73,18 @@ def send_welcome(message):
 def forward_message(message):
 	# Надсилання повідомлення клієнту
 	if message.chat.id == parameters.group_id_main:
+		
 		# print(message.reply_to_message)
 		if message.reply_to_message.forward_sender_name:
-			print(f'Send to {message.reply_to_message.forward_sender_name}')
-			bot.send_message(users[message.reply_to_message.forward_sender_name]["chat_id"], message.text)
+			name = message.reply_to_message.forward_sender_name
+			print(name)
+			print(f'Send to {name.split(" ")[0]}')
+			bot.send_message(users[name.split(" ")[0]]["chat_id"], message.text)
+			users[name.split(" ")[0]].update({"send_answer": True})
 		else:
 			print(f'Send to {message.reply_to_message.forward_from.first_name}')
 			bot.send_message(message.reply_to_message.forward_from.id, message.text)
+			users[message.reply_to_message.forward_from.first_name].update({"send_answer": True})
 	# Перенаправлення повідомлення до групи підтримки
 	else:
 		bot.forward_message(parameters.group_id_main, message.chat.id, message.message_id)
@@ -97,8 +102,8 @@ def forward_message(message):
 					}
 			}
 		)
-		with open('data/users.json', "w") as file:
-			json.dump(users, file)
+	with open('data/users.json', "w") as file:
+		json.dump(users, file)
 
 
 def send_answer_to_user():
@@ -128,7 +133,7 @@ def send_answer_to_user():
 				elif 7 < int(str(datetime.datetime.strptime(users[user]["time_last_message"],
 				                                            "%Y-%m-%d %H:%M:%S").strftime("%H"))) >= 16:
 					bot.send_message(users[user]["chat_id"],
-					                 f"Дякуємо, {user}."
+					                 f"Дякуємо, {user}. "
 					                 f"Запит прийнято, але ми вже не працюємо. Завтра наші фахівці займуться вашим питанням.")
 				# Робочий час
 				else:
