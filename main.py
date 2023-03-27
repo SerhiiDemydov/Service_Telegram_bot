@@ -14,7 +14,7 @@ logging.basicConfig(level='INFO')
 logger = logging.getLogger()
 
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-handler = logging.FileHandler('logfile.log')
+handler = logging.FileHandler('data/logfile.log')
 handler.setLevel(level=logging.DEBUG)
 handler.setFormatter(formatter)
 
@@ -37,24 +37,22 @@ def forward_message(message):
 	# Надсилання повідомлення клієнту
 	if message.chat.id == parameters.group_id_main:
 		# try:
-			if message.reply_to_message.forward_from:
-				# print(message.reply_to_message)
-				if message.reply_to_message.forward_sender_name:
-					name = message.reply_to_message.forward_sender_name
-					bot.send_message(users[name.split(" ")[0]]["chat_id"], message.text)
-					users[name.split(" ")[0]].update({"send_answer": True})
-					bot.reply_to(message,
-					             f"Повідомлення надіслано користувачу {name.split(' ')[0]} (@{users[name.split(' ')[0]]['username']})")
-					logger.info(f"Send answer to {name.split(' ')[0]} (@{users[name.split(' ')[0]]['username']}_")
-				else:
-					print(f'Send to {message.reply_to_message.forward_from.first_name}')
-					bot.send_message(message.reply_to_message.forward_from.id, message.text)
-					users[message.reply_to_message.forward_from.first_name].update({"send_answer": True})
-					bot.reply_to(message,
-					             f"Повідомлення надіслано користувачу {message.reply_to_message.forward_from.first_name} "
-					             f"(@{users[message.reply_to_message.forward_from.first_name]['username']})")
-					logger.info(f"Send answer to {message.reply_to_message.forward_from.first_name} "
-					             f"(@{users[message.reply_to_message.forward_from.first_name]['username']})")
+			if message.reply_to_message.forward_sender_name:
+				name = message.reply_to_message.forward_sender_name
+				bot.send_message(users[name.split(" ")[0]]["chat_id"], message.text)
+				users[name.split(" ")[0]].update({"send_answer": True})
+				bot.reply_to(message,
+				             f"Повідомлення надіслано користувачу {name.split(' ')[0]} (@{users[name.split(' ')[0]]['username']})")
+				logger.info(f"Send answer to {name.split(' ')[0]} (@{users[name.split(' ')[0]]['username']})")
+			else:
+				print(f'Send to {message.reply_to_message.forward_from.first_name}')
+				bot.send_message(message.reply_to_message.forward_from.id, message.text)
+				users[message.reply_to_message.forward_from.first_name].update({"send_answer": True})
+				bot.reply_to(message,
+				             f"Повідомлення надіслано користувачу {message.reply_to_message.forward_from.first_name} "
+				             f"(@{users[message.reply_to_message.forward_from.first_name]['username']})")
+				logger.info(f"Send answer to {message.reply_to_message.forward_from.first_name} "
+				             f"(@{users[message.reply_to_message.forward_from.first_name]['username']})")
 		# except AttributeError:
 		# 	bot.reply_to(message,
 		# 	             f"Повідомлення не відправлене")
